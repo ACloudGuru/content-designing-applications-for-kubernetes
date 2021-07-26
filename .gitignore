@@ -1,2 +1,5 @@
 .DS_Store
 build/
+node_modules
+added_items.log
+uloe.log

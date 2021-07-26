@@ -1,0 +1,23 @@
+{
+  "name": "content-designing-applications-for-kubernetes",
+  "version": "1.0.0",
+  "description": "`The Ultimate List of Everything!` is a sample project for the *Designing Applications for Kubernetes* course. Create your own fork of this project and follow along as we implement the [twelve-factor application design methodology](https://12factor.net/) in Kubernetes!",
+  "main": "uloeAPI.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^4.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ACloudGuru/content-designing-applications-for-kubernetes.git"
+  },
+  "author": "Will Boyd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ACloudGuru/content-designing-applications-for-kubernetes/issues"
+  },
+  "homepage": "https://github.com/ACloudGuru/content-designing-applications-for-kubernetes#readme"
+}
