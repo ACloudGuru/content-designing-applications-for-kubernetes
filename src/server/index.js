@@ -13,6 +13,8 @@ const password = encodeURIComponent("ILoveTheList");
 const mongoURI = `mongodb://${username}:${password}@localhost:27017/uloe`;
 
 const fs = require('fs')
+const cors = require('cors')
+app.use(cors())
 
 MongoClient.connect(mongoURI, { useUnifiedTopology: true }).then(client => {
   const db = client.db('uloe')
@@ -40,24 +42,26 @@ MongoClient.connect(mongoURI, { useUnifiedTopology: true }).then(client => {
       res.status(400).send('Bad Request')
     } else {
       listCollection.insertOne(req.body).then(result => {
-        log("Adding item " + req.body.name);
-        res.end();
+        const item = {_id: result.insertedId, name: req.body.name};
+        log("Adding item " + item.name);
+        res.send(item);
         // Write added items to a special log file
-        fs.appendFileSync('added_items.log', req.body.name + "\n");
+        fs.appendFileSync('added_items.log', item.name + "\n");
       })
       .catch(error => console.error(error))
     }
   })
 
-  // The port the server will listen on
-  var port = 8081
-
-  // Setup listening http server
-  var server = app.listen(port, function () {
-    console.log("ULOE app listening on port %s", port)
-  })
 })
 .catch(console.error)
+
+// The port the server will listen on
+const port = process.env.SERVER_PORT || 3001;
+
+// Setup listening http server
+var server = app.listen(port, function () {
+  console.log("ULOE app listening on port %s", port)
+})
 
 log = function(data) {
   fs.appendFileSync('uloe.log', data + "\n");
