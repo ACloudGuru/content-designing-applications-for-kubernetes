@@ -60,6 +60,13 @@ spec:
       containers:
       - name: uloe-server
         image: <Your Docker Hub username>/uloe-server:0.0.1
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - name: added-items-log
+          mountPath: /usr/src/app/added_items.log
+          subPath: added_items.log
+          readOnly: false
         ports:
         - name: web
           containerPort: 3001
@@ -97,6 +104,8 @@ spec:
           subPath: .env
           readOnly: true
       volumes:
+      - name: added-items-log
+        emptyDir: {}
       - name: frontend-config
         configMap:
           name: uloe-config
