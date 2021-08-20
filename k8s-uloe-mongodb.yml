@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uloe-mongodb
+  labels:
+    app: uloe-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uloe-mongodb
+  template:
+    metadata:
+      labels:
+        app: uloe-mongodb
+    spec:
+      containers:
+      - name: uloe-mongodb
+        image: linuxacademycontent/uloe-mongodb:1.0.0
+        ports:
+        - name: mongodb
+          containerPort: 27017
