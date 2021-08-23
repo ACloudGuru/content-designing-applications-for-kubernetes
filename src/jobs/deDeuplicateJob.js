@@ -1,11 +1,15 @@
 // Setup MongoDb backing database
 const MongoClient = require('mongodb').MongoClient
 // MongoDB credentials
-const username = process.env.MONGODB_USER || "uloe_user";
-const password = process.env.MONGODB_USER || "ILoveTheList";
+const username = encodeURIComponent(process.env.MONGODB_USER || "uloe_user");
+const password = encodeURIComponent(process.env.MONGODB_PASSWORD || "ILoveTheList");
+// MongoDB connection info
+const mongoPort = process.env.MONGODB_PORT || 27017;
+const mongoHost = process.env.MONGODB_HOST || 'localhost';
 // MongoDB connection string
-const mongoLoc = process.env.MONGODB_LOC || "localhost:27017/uloe";
-const mongoURI = `mongodb://${username}:${password}@${mongoLoc}`;
+const mongoURI = `mongodb://${username}:${password}@${mongoHost}:${mongoPort}/uloe`;
+const mongoURISanitized = `mongodb://${username}:****@${mongoHost}:${mongoPort}/uloe`;
+console.log("MongoDB connection string %s", mongoURISanitized);
 const client = new MongoClient(mongoURI);
 
 async function run() {
