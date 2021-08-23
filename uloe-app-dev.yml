@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uloe-config
+data:
+  mongodb.host: "uloe-mongodb"
+  mongodb.port: "27017"
+  .env: |
+    REACT_APP_API_PORT="30083"
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: uloe-secure-config
+type: Opaque
+data:
+  mongodb.username: dWxvZV91c2Vy
+  mongodb.password: SUxvdmVUaGVMaXN0
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: uloe-svc
+spec:
+  type: NodePort
+  selector:
+    app: uloe
+  ports:
+  - name: frontend
+    protocol: TCP
+    port: 30082
+    nodePort: 30082
+    targetPort: 5000
+  - name: server
+    protocol: TCP
+    port: 30083
+    nodePort: 30083
+    targetPort: 3001
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uloe
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: uloe
+  template:
+    metadata:
+      labels:
+        app: uloe
+    spec:
+      containers:
+      - name: uloe-server
+        image: <Your Docker Hub username>/uloe-server:0.0.1
+        securityContext:
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - name: added-items-log
+          mountPath: /usr/src/app/added_items.log
+          subPath: added_items.log
+          readOnly: false
+        ports:
+        - name: web
+          containerPort: 3001
+          protocol: TCP
+        env:
+        - name: MONGODB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: uloe-config
+              key: mongodb.host
+        - name: MONGODB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: uloe-config
+              key: mongodb.port
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              name: uloe-secure-config
+              key: mongodb.username
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: uloe-secure-config
+              key: mongodb.password
+      - name: uloe-frontend
+        image: <Your Docker Hub username>/uloe-frontend:0.0.1
+        ports:
+        - name: web
+          containerPort: 5000
+          protocol: TCP
+        volumeMounts:
+        - name: frontend-config
+          mountPath: /usr/src/app/.env
+          subPath: .env
+          readOnly: true
+      volumes:
+      - name: added-items-log
+        emptyDir: {}
+      - name: frontend-config
+        configMap:
+          name: uloe-config
+          items:
+          - key: .env
+            path: .env
