@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: uloe-server
-        image: <Your Docker Hub username>/uloe-server:0.0.1
+        image: <Your Docker Hub username>/uloe-server:0.0.4
         securityContext:
           readOnlyRootFilesystem: true
         volumeMounts:
